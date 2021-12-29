@@ -1,0 +1,46 @@
+server:
+  port: 9101
+
+person:
+  name: 张三
+  age: 20
+  birthday: 2021/12/22
+  maps:
+    k1: SSM
+    k2: SpringBoot
+  lists:
+    - Vue
+    - Layui
+    - ElmentUI
+  dog:
+    name: 旺财
+    age: 1
+  happy: true
+#  springboot默认的数据源
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/school?serverTimezone=UTC
+#    指定druid连接池
+#    type: com.alibaba.druid.pool.DruidDataSource
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update #创建表或更新操作
+    show-sql: true #开启控制台显示执行的SQL语句
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+#  logging.level.org.springframework.boot.autoconfigure: error
+
+  thymeleaf:
+    prefix: "classpath:/templates/" #指定模板页面的路径
+    suffix: .html #指定模板页面的后缀名
+    mode: HTML5 #指定模板格式
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    cache: false
+
+  mvc:
+    static-path-pattern: static/**
