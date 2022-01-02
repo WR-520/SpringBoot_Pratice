@@ -75,7 +75,7 @@
                 ]
             ],
             //用于执行搜索操作
-            id:"testReload",
+           // id:"testReload",
             toolbar: false, //开启表格头部工具栏区域
             //width:'1200', //设置表格宽度
             // done: function(){ //数据渲染完成之后的回调（回显）
@@ -212,7 +212,7 @@
             //搜索操作
             getClickInput: function(){
                 var inputValue = $('#dateTest').val();
-                table.reload('testReload',{
+                table.reload('tableDemo',{
                     page:{
                         curr:1 //重新从第一页开始
                     },

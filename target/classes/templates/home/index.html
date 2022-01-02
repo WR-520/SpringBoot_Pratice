@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <title>layuimini-iframe版 v2 - 基于Layui的后台管理系统前端模板</title>
@@ -12,11 +12,11 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
-    <link rel="icon" href="../static/images/favicon.ico">
-    <link rel="stylesheet" href="../static/lib/layui-v2.6.3/css/layui.css" media="all">
-    <link rel="stylesheet" href="../static/css/layuimini.css?v=2.0.4.2" media="all">
-    <link rel="stylesheet" href="../static/css/themes/default.css" media="all">
-    <link rel="stylesheet" href="../static/lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
+    <link rel="icon" href="../../static/images/favicon.ico">
+    <link rel="stylesheet" href="../../static/lib/layui-v2.6.3/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../static/css/layuimini.css?v=2.0.4.2" media="all">
+    <link rel="stylesheet" href="../../static/css/themes/default.css" media="all">
+    <link rel="stylesheet" href="../../static/lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
     <style id="layuimini-bg-color">
     </style>
 </head>
@@ -56,19 +56,27 @@
                     <a href="javascript:;" data-check-screen="full"><i class="fa fa-arrows-alt"></i></a>
                 </li>
                 <li class="layui-nav-item layuimini-setting">
-                    <a href="javascript:;">admin</a>
+                    <a href="javascript:;">
+                        <label style="color: red;" th:text="${session.user.getUserName()}"></label>
+                    </a>
                     <dl class="layui-nav-child">
                         <dd>
-                            <a href="javascript:;" layuimini-content-href="page/user-setting.html" data-title="基本资料" data-icon="fa fa-gears">基本资料<span class="layui-badge-dot"></span></a>
+                            <!--layuimini-content-href="page/user-password.html"-->
+<!--                           http://localhost:9101/user/showUser?id=1 /user/user-setting.html-->
+
+                            <a th:attr="layuimini-content-href=@{/user/showUser?id=}+${session.user.getId()}"
+                               data-title="基本资料" class="login-user"
+                               data-icon="fa fa-gears">获取信息<span class="layui-badge-dot"></span>
+                            </a>
                         </dd>
                         <dd>
-                            <a href="javascript:;" layuimini-content-href="page/user-password.html" data-title="修改密码" data-icon="fa fa-gears">修改密码</a>
+                            <a th:attr="layuimini-content-href=@{/user/toChangePassword?id=}+${session.user.getId()}" data-title="修改密码" data-icon="fa fa-gears">修改密码</a>
                         </dd>
                         <dd>
                             <hr>
                         </dd>
                         <dd>
-                            <a href="javascript:;" class="login-out">退出登录</a>
+                            <a  class="login-out">退出登录</a>
                         </dd>
                     </dl>
                 </li>
@@ -123,14 +131,15 @@
 
     </div>
 </div>
-<script src="../static/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
-<script src="../static/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
+<script src="../../static/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
+<script src="../../static/js/lay-config.js?v=2.0.0" charset="utf-8"></script>
 <script>
     layui.use(['jquery', 'layer', 'miniAdmin','miniTongji'], function () {
         var $ = layui.jquery,
             layer = layui.layer,
             miniAdmin = layui.miniAdmin,
             miniTongji = layui.miniTongji;
+        console.log("========>"+[[${session.user.getId()}]])
 
         var options = {
             iniUrl: "../static/api/init.json",    // 初始化接口
@@ -156,12 +165,26 @@
         });
 
         $('.login-out').on("click", function () {
-
             layer.msg('退出登录成功', function () {
-                window.location = 'login/login.html';
+                window.location = 'user/loginOut';
             });
         });
+
+        // $('.login-user').on("click",function () {
+        //     var ids = [[${session.user.getId()}]];
+        //     $.ajax({
+        //         type:"post",
+        //         data:{id:ids},
+        //         url:"/user/showUser",
+        //         success: function (date) {
+        //             if(date.code==0){
+        //                 window.location.href="user/user-setting";
+        //             }
+        //         }
+        //     })
+        // })
     });
+
 </script>
 </body>
 </html>

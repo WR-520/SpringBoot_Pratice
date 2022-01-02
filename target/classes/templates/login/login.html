@@ -75,7 +75,7 @@
 
                 <div id="validatePanel" class="item" style="width: 137px;">
                     <input type="text" name="captcha" placeholder="请输入验证码" maxlength="4">
-                    <img id="refreshCaptcha" class="validateImg"  src="../../static/images/captcha.jpg" >
+                    <img  id="refreshCaptcha" onclick="getCodeVerify()" class="validateImg"  src="/user/getNumCode" >
                 </div>
 
             </div>
@@ -136,12 +136,32 @@
                 layer.msg('验证码不能为空');
                 return false;
             }
-            layer.msg('登录成功', function () {
-                window.location = '../index.html';
-            });
+            alert("====>"+JSON.stringify( data ) );
+            $.ajax({
+               type:"post",
+               dataType:"json",
+               url:"user/login",
+               data:JSON.stringify(data),
+               contentType:"application/json;charset=UTF-8",
+               success:function(data){
+                   if(data.code == 0 ) {
+                       layer.msg('登录成功', function () {
+                            window.location = '/index';
+                       })
+                   }else{
+                       layer.msg(data.message,{icon:5})
+                   }
+               }
+            })
+
             return false;
         });
+
     });
+    function getCodeVerify(){
+        document.querySelector("#refreshCaptcha").src = "/user/getNumCode?time"+new Date().getTime();
+    }
+
 </script>
 </body>
 </html>

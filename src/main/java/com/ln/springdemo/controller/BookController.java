@@ -5,6 +5,8 @@ import cn.hutool.json.JSONObject;
 import com.ln.springdemo.service.book.BookService;
 import com.ln.springdemo.tools.ResultVo;
 import com.ln.springdemo.tools.ResultVoUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/book")
+@Api("图书管理模块")
 public class BookController {
     @Autowired
     private BookService bookService;
@@ -64,6 +67,7 @@ public class BookController {
 
     @GetMapping("/deleteAllCheck")
     @ResponseBody
+    @ApiOperation("根据id进行删除操作")
     public ResultVo deleteAllCheck(String ids) {
         String[] strIds = ids.split(";");
         Integer[] IntIds = new Integer[strIds.length];
