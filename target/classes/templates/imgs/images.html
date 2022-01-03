@@ -1,67 +1,66 @@
 <!DOCTYPE html>
-<html  lang="en" xmlns:th="http://www.thymeleaf.org">
+<html>
 <head>
-    <meta charset="utf-8">
-    <title>基本资料</title>
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" href="../../static/lib/layui-v2.6.3/css/layui.css" media="all">
-    <link rel="stylesheet" href="../../static/css/public.css" media="all">
-    <style>
-        .layui-form-item .layui-input-company {width: auto;padding-right: 10px;line-height: 38px;}
-    </style>
+	<meta charset="utf-8">
+	<title>图片总数--layui后台管理模板</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="../../static/css/layui.css" media="all" />
+	<link rel="stylesheet" href="../../static/css/images.css" media="all" />
 </head>
-<body>
-<div class="layuimini-container">
-    <div class="layuimini-main">
-        <div class="layui-form-item">
-            <label class="layui-form-label required">管理账号</label>
-            <div class="layui-input-block">
-                <input type="text" name="username"  readonly class="layui-input">
-                <tip>填写自己管理账号的名称。</tip>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label required">登陆密码</label>
-            <div class="layui-input-block">
-                <input type="text" name="password"  readonly class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <label class="layui-form-label">电话</label>
-            <div class="layui-input-block">
-                <input type="text" name="iphone"  readonly class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item layui-form-text">
-            <label class="layui-form-label">注册时间</label>
-            <div class="layui-input-block">
-                <input type="text" name="createTime"  readonly class="layui-input">
-            </div>
-        </div>
-    </div>
-</div>
-<script src="../../static/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
-<script src="../../static/js/lay-config.js?v=1.0.4" charset="utf-8"></script>
-<script>
-    layui.use(['form','miniTab'], function () {
-        var form = layui.form,
-            layer = layui.layer,
-            miniTab = layui.miniTab;
-
-        //监听提交
-        form.on('submit(saveBtn)', function (data) {
-            var index = layer.alert(JSON.stringify(data.field), {
-                title: '最终的提交信息'
-            }, function () {
-                layer.close(index);
-                miniTab.deleteCurrentByIframe();
-            });
-            return false;
-        });
-
-    });
-</script>
+<body class="childrenBody">
+	<form class="layui-form">
+		<blockquote class="layui-elem-quote news_search">
+			<div class="layui-inline">
+				<input type="checkbox" name="selectAll" id="selectAll" lay-filter="selectAll" lay-skin="primary" title="全选">
+			</div>
+			<div class="layui-inline">
+				<a class="layui-btn layui-btn-danger batchDel">批量删除</a>
+			</div>
+			<div class="layui-inline">
+				<div class="layui-form-mid layui-word-aux">　本页所有数据均为静态，刷新后所有操作无效</div>
+			</div>
+		</blockquote>
+		<ul id="Images"></ul>
+	</form>
+	<script type="text/javascript" src="../../static/lib/layui-v2.6.3/layui.js"></script>
+<!--	<script type="text/javascript" src="images.js"></script>-->
+	<script>
+		layui.use(['flow'],function () {
+			var flow = layui.flow, //流加载
+					$ = layui.jquery;
+			flow.load({//流加载容器
+				elem:"#Images",//指定流加载的容器
+				done:function (page,limit) {//执行下一页的回调
+					var lis = [];
+					$.ajax({
+						url:"/showImgLimits",
+						data:{page:page,limit:10},//分页显示的条件
+						type:"post",
+						success:function (res) {
+							layui.each(res.data,function (index,item) {//layui遍历函数
+								console.log("item========>"+item);
+								lis.push('<li>' +
+										'<img src="../static/uploadImg/'+item.imgPath+'">'
+										+ '<div class="operate">'
+										+ '<div class="check">'
+										+ '<input type="checkbox" name="belle" lay-filter="choose" lay-skin="primary" title="'+item.imgName+'">'
+										+ '</div>'
+										+ '<i class="layui-icon layui-icon-delete img_del"></i>'
+										+ '</div>'
+										+ '</li>');
+							});
+							//执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
+							limit(lis.join(''),page<res.count);
+						}
+					});
+				}
+			});
+		})
+	</script>
 </body>
 </html>

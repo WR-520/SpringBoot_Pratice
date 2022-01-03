@@ -48,7 +48,7 @@ public class webHandlerConfig implements WebMvcConfigurer {
         registry.addViewController("/login").setViewName("login/login");
         //映射图片添加页面
         registry.addViewController("imgs/addImage").setViewName("/imgs/addImage");
-        registry.addViewController("imgs/images").setViewName("/imgs/images");
+        registry.addViewController("imgs/imgHtml").setViewName("/imgs/images");
     }
 
 

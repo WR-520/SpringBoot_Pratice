@@ -22,7 +22,7 @@ public class Img {
 //    @Column(name = "imgT")
 //    图片类型
     @Column(nullable = false)
-    private int imgType;
+    private String imgType;
 //    图片是否显示
     @Column(nullable = false)
     private String imgOpen;

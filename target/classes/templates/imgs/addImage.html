@@ -15,7 +15,7 @@
 <body>
 <div class="layuimini-container">
     <div class="layuimini-main">
-        <form class="layui-form">
+        <form class="layui-form" id="restFrom">
             <div class="layui-form layuimini-form">
                 <div class="layui-form-item">
                     <label class="layui-form-label required">图片名称</label>
@@ -24,36 +24,42 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <input type="hidden" name="imgPath">
-                    <label class="layui-form-label required" >图片上传</label>
+                    <input type="hidden" name="imgPath" id="imgName">
+                    <label class="layui-form-label required">图片上传</label>
                     <div class="layui-upload-drag" id="uploadImgFile">
-                    <i class="layui-icon layui-icon-upload"></i>
-                    <p>点击上传，或将文件拖拽到此处</p >
-                    <div class="layui-hide" id="uploadDemoView">
-                        <hr>
-                        <img src="" alt="上传成功后渲染" style="max-width: 196px" id="strImg">
+                        <i class="layui-icon"></i>
+                        <p style="margin-bottom: 15px;">点击上传，或将文件拖拽到此处</p >
+                        <div style="width: 196px;">
+                        <div class="layui-progress layui-progress-big" lay-showpercent="yes" lay-filter="filterImg">
+                            <div class="layui-progress-bar" lay-percent=""></div>
+                        </div>
                     </div>
                 </div>
-
+                    <img style="max-width: 196px; visibility:hidden;" id="strImg" >
                 </div>
+
                 <div class="layui-form-item">
                     <label class="layui-form-label required">图片类型</label>
                     <div class="layui-input-inline">
                         <select name="imgType" lay-filter="aihao">
                             <option value=""></option>
-                            <option value="0">人物</option>
-                            <option value="1" selected="">风景</option>
-                            <option value="2">生活</option>
-                            <option value="3">旅游</option>
-                            <option value="4">美食</option>
-
+                            <option value="人物">人物</option>
+                            <option value="风景" selected="">风景</option>
+                            <option value="生活">生活</option>
+                            <option value="旅游">旅游</option>
+                            <option value="美食">美食</option>
                         </select>
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">图片等级</label>
-                    <div><div id="plevelNum" name="plevelNum"></div>
+                    <div>
+                        <div id="plevelNum">
+
+                        </div>
+                        <input type="hidden" name="plevelNum" id="plevelValue">
                     </div>
+
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">图片描述</label>
@@ -64,13 +70,13 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">是否显示</label>
                     <div class="layui-input-block">
-                        <input type="checkbox" checked="" name="imgOpen" lay-skin="switch" lay-filter="switchTest" lay-text="显示|隐藏">
+                        <input type="checkbox" checked="" name="imgOpen" lay-skin="switch" lay-filter="switchTest" lay-text="NO|OFF">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">上传时间</label>
                     <div class="layui-input-block" >
-                        <input type="text" name="createTime"  id="creTime" readonly class="layui-input">
+                        <input type="text" name="createTime"  id="createTime" readonly class="layui-input">
                     </div>
                 </div>
                 <div class="layui-form-item" style="margin: 0 auto">
@@ -88,76 +94,100 @@
 <script src="../../static/lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
 <script src="../../static/js/lay-config.js?v=1.0.4" charset="utf-8"></script>
 <script>
-    layui.use(['form','rate','laydate','upload'], function () {
+    layui.use(['form','miniTab','rate','laydate','upload'], function () {
         var form = layui.form,
             layer = layui.layer,
-            miniTab = layui.miniTab;
-        $ = layui.$;//jquery = layui.jquery;
-        laydate = layui.laydate;
-        rate = layui.rate;
-        upload = layui.upload;
-
-        rate.render({
-            elem: '#plevelNum'
-            ,value:2
-            ,half:true
-            ,text:true
-            ,setText:function (value) {
-                this.span.text(value);
-            }
-
-        })
-        laydate.render({
-            elem:"#createTime",
-            type:"datetime",
-            value:new Date(),
-        })
-
+            miniTab = layui.miniTab,
+            $ = layui.$,
+            //jquery = layui.jquery;
+            laydate = layui.laydate,
+            rate = layui.rate,
+            upload = layui.upload,
+            element = layui.element;
         //上传操作
         upload.render({
-            // 绑定上传操作的div的id属性
-            elem:'#uploadImgFile',
-            type: "post",
+            elem:"#uploadImgFile", //绑定上传操作的div的id属性
             url:"/uploadFilesImg",
-            accept:"images", //指定上传文件的类型
-            acceptMime: "images/*", //选择上传文件类型
-            auto:true,//自动上传操作
-            choose:function(obj){
-            //    文件上传之前的回调
-
+            type:"post",
+            accpet:"images", //指定上传文件的类型
+            accpetMime:"images/*", //选择上传文件的类型
+            auto:true, //自动上传操作
+            //field:"imgPath",
+            // choose:function (obj) {
+            //
+            // },
+             before:function(obj){//文件上传之前的回调
+                //预读本地文件实例， 不支持IE8
+                obj.preview(function (index,file,result) {
+                   $("#strImg").css('visibility','visible');//显示隐藏的图片
+                   $("#strImg").attr("src",result);//图片链接（base64）
+                   // console.log("strImg.src",$('#strImg')[0].src);
+                });
+                element.progress('filterImg','0%');
+                layer.msg('上传中',{icon:16,time:0});
             },
-            //执行上传请求后的回调
-            done:function(res){
-              if(res.code == 0 ){
-                  layer.msg(res.message,{icon:6,time:1000});
-                  obj.preview(function (index,file,result) {
-                     console.log(index);
-                     console.log(file);
-                     console.log(result);
-                     $('#strImg').attr("src",result);
-                  })
-
-
-
-              }
-            },
-            // 上传异常
-            error:function(){
+            done:function (res) {//执行上传请求
+                if (res.code == 0){
+                    //console.log("===>"+res.data);
+                    layer.msg(res.message,{icon:6,time:1000});
+                    //预读本地文件
+                    // $("#strImg").attr("src", res.files.file);
+                }
+                $("#imgName").val(res.data);
+            }//进度条
+            ,progress: function(n, elem, e){
+                element.progress('filterImg', n + '%'); //可配合 layui 进度条元素使用
+                if(n == 100){
+                    layer.msg('上传完毕', {icon: 1});
+                }
+            }
+            ,error:function () {//上传异常
 
             }
 
-        })
+        });
 
+            rate.render({
+                elem: '#plevelNum'
+                ,value:2
+                ,half:true
+                ,text:true
+                ,setText:function (value) {
+                    $('#plevelValue').val(value);
+                    this.span.text(value);
+                }
+            })
+            laydate.render({
+                elem:"#createTime",
+                type:"datetime",
+                value:new Date(),
+            })
 
         //监听提交
         form.on('submit(saveBtn)', function (data) {
-            var index = layer.alert(JSON.stringify(data.field), {
-                title: '最终的提交信息'
-            }, function () {
-                layer.close(index);
-                miniTab.deleteCurrentByIframe();
-            });
-            return false;
+            console.log("======>data.field",data.field);
+            data.field.imgOpen = (data.field.imgOpen && data.field.imgOpen=="no")?"no":"off";
+            $.ajax({
+                type:'post',
+                url:'/saveImg',
+                dataType:'json',
+                data:JSON.stringify(data.field),
+                contentType:"application/json;charset=UTF-8",
+                success:function (data){
+                    if (data.code==0) {
+                        layer.msg(data.message,{icon:6,time:1000},function () {
+
+                            window.location.reload();
+                        })
+                    }else {
+                        layer.msg(data.message,{icon:5,time:1000},function () {
+                            window.location.reload();
+                        })
+                    }
+                    $("#restFrom")[0].reset();//通过reset()方法重置刷新，清空form表单
+                    layer.form.render();
+                }
+            })
         });
 
     });

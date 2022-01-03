@@ -2,11 +2,15 @@ package com.ln.springdemo.controller;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.ln.springdemo.bean.Img;
+import com.ln.springdemo.service.Img.ImgService;
 import com.ln.springdemo.tools.ResultVo;
 import com.ln.springdemo.tools.ResultVoUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ImgController {
@@ -41,9 +47,38 @@ public class ImgController {
             filePath.mkdirs();//构建uploadImg目录
         }
         file.transferTo(filePath);
-        return ResultVoUtils.success("文件上传成功","图片上传操作");
+        return ResultVoUtils.success("文件上传成功","图片上传操作",newFileName);
     }else{
         return ResultVoUtils.success("文件上传成功","文件上传操作");
     }
+  }
+  @Autowired
+  private ImgService imgService;
+
+//
+  @ResponseBody
+  @PostMapping("/saveImg")
+   public ResultVo saveImg(@RequestBody Img img){
+        if(ObjectUtil.isNotNull(img)){
+           boolean resBool = imgService.save(img);
+           if(resBool){
+               return ResultVoUtils.success("保存成功","保存图片信息操作");
+           }else{
+               return ResultVoUtils.error("error","保存图片信息操作");
+           }
+
+        }
+        else{
+            return ResultVoUtils.error("保存失败","保存图片信息操作");
+
+        }
+   }
+   @ResponseBody
+   @PostMapping("/showImgLimits")
+  public ResultVo showImgLimits(String page,@RequestParam(defaultValue = "10", name = "limit")String limit){
+     Map<String,Object> objectMap =  imgService.page(Integer.parseInt(page),Integer.parseInt(limit));
+     Long count = (Long)objectMap.get("TotalElements");//总记录数
+     List<Img> imgList = (List<Img>) objectMap.get("pageContent");
+     return ResultVoUtils.success("图片分页查询",imgList,"图片流加载显示",count);
   }
 }

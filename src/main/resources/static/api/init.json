@@ -55,7 +55,7 @@
           "child": [
             {
               "title": "图片列表",
-              "href": "imgs/images",
+              "href": "imgs/imgHtml",
               "icon": "fa fa-list-alt",
               "target": "_self"
             },
