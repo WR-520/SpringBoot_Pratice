@@ -5,6 +5,7 @@ import com.ln.springdemo.Repository.ImgRepository;
 import com.ln.springdemo.bean.Book;
 import com.ln.springdemo.bean.Img;
 import com.ln.springdemo.service.Img.ImgService;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,8 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ImgServiceImpl implements ImgService {
@@ -41,4 +41,16 @@ public class ImgServiceImpl implements ImgService {
         map.put("pageContent", page.getContent());
         return map;
     }
+
+    @Override
+    public void deleById(String id) {
+        imgRepository.deleteById(Integer.parseInt(id) );
+    }
+
+    @Override
+    public Img findById(Integer id) {
+        return  imgRepository.findById(id).get();
+
+    }
+
 }

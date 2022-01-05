@@ -8,4 +8,6 @@ public interface ImgService {
     public boolean save(Img img);
     //分页条件查询
     Map<String, Object> page(int pageNum, int pageSize);
+    void deleById(String id);
+    Img findById(Integer id);
 }

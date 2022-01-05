@@ -1,21 +1,21 @@
 server:
   port: 9101
 
-person:
-  name: 张三
-  age: 20
-  birthday: 2021/12/22
-  maps:
-    k1: SSM
-    k2: SpringBoot
-  lists:
-    - Vue
-    - Layui
-    - ElmentUI
-  dog:
-    name: 旺财
-    age: 1
-  happy: true
+#person:
+#  name: 张三
+#  age: 20
+#  birthday: 2021/12/22
+#  maps:
+#    k1: SSM
+#    k2: SpringBoot
+#  lists:
+#    - Vue
+#    - Layui
+#    - ElmentUI
+#  dog:
+#    name: 旺财
+#    age: 1
+#  happy: true
 #  springboot默认的数据源
 spring:
   datasource:
@@ -52,3 +52,18 @@ spring:
 saveImage:
   path: D:/springdemo/src/main/resources/static
 
+  # r56gzx0uk.hn-bkt.clouddn.com 域名
+
+  # AK 8O4w2bmoOfLowwFc2qypuClurQwPD9dG5pVqOII-
+
+  # SK jou3aVxQormg-sJs3mflgfvO2fkYvMCuuw6Evj1k
+
+  # wr666 存储空间名称
+
+# 七牛上传凭证
+oss:
+  qiniu:
+    path: http://r56gzx0uk.hn-bkt.clouddn.com
+    accessKey: 8O4w2bmoOfLowwFc2qypuClurQwPD9dG5pVqOII-
+    secretKey: jou3aVxQormg-sJs3mflgfvO2fkYvMCuuw6Evj1k
+    bucket: wr666

@@ -28,39 +28,138 @@
 		<ul id="Images"></ul>
 	</form>
 	<script type="text/javascript" src="../../static/lib/layui-v2.6.3/layui.js"></script>
-<!--	<script type="text/javascript" src="images.js"></script>-->
+
 	<script>
-		layui.use(['flow'],function () {
+		layui.use(['flow','form','layer'],function () {
 			var flow = layui.flow, //流加载
-					$ = layui.jquery;
-			flow.load({//流加载容器
-				elem:"#Images",//指定流加载的容器
-				done:function (page,limit) {//执行下一页的回调
-					var lis = [];
+				$ = layui.jquery,
+				form = layui.form,
+				layer = layui.layer;
+                flow.load({//流加载容器
+                    elem:"#Images",//指定流加载的容器
+                    done:function (page,limit) {//执行下一页的回调
+                        var lis = [];
+                        $.ajax({
+                            url:"/showImgLimits",
+                            data:{page:page,limit:10},//分页显示的条件
+                            type:"post",
+                            success:function (res) {
+                                layui.each(res.data,function (index,item) {//layui遍历函数
+                                    console.log("item========>"+item);
+                                    //../static/uploadImg/
+                                    lis.push('<li>' +
+                                        '<img src="'+item.imgPath+'">' +
+                                        '<div class="operate">' +
+                                        '<div class="check">' +
+                                        '<input type="checkbox" value="'+item.id+'" name="belle" lay-filter="choose" lay-skin="primary" title="'+item.imgName+'">' +
+                                        '</div>' +
+                                        '<i class="layui-icon layui-icon-delete img_del"></i>' +
+                                        '</div>' +
+                                        '</li>');
+                                });
+                                //执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
+                                limit(lis.join(''),page<res.count);
+                                form.render();//
+                            }
+                        });
+                    }
+                });
+
+
+
+
+			//删除单张图片
+            $("body").on("click",".img_del",function () {
+				var _this = $(this);
+                layer.confirm("确认删除选中的图片？",{icon:3,title:"提示信息"},function f() {
+					var index = layer.msg("删除中，请稍后",{icon:6,time:0,shade:0.8});
+					// alert("绑定点击事件！！！");
+					//siblings():获取匹配集合中每个元素的同胞，通过选择器进行筛选
+					//find():返回被选元素的后代元素
+					var delId = _this.siblings().find("input").attr("value");
+					alert("delId:"+delId);
 					$.ajax({
-						url:"/showImgLimits",
-						data:{page:page,limit:10},//分页显示的条件
 						type:"post",
-						success:function (res) {
-							layui.each(res.data,function (index,item) {//layui遍历函数
-								console.log("item========>"+item);
-								lis.push('<li>' +
-										'<img src="../static/uploadImg/'+item.imgPath+'">'
-										+ '<div class="operate">'
-										+ '<div class="check">'
-										+ '<input type="checkbox" name="belle" lay-filter="choose" lay-skin="primary" title="'+item.imgName+'">'
-										+ '</div>'
-										+ '<i class="layui-icon layui-icon-delete img_del"></i>'
-										+ '</div>'
-										+ '</li>');
-							});
-							//执行下一页渲染，第二参数为：满足“加载更多”的条件，即后面仍有分页
-							limit(lis.join(''),page<res.count);
+						url:"/deleteById",
+						data:{"id":delId},//deleteById(String id)
+						// data:JSON.stringify(delId) ===>json格式数据传参
+						success: function (res) {
+							if (res.code == 0){
+								setTimeout(function () {
+									//hide:隐藏页面元素
+									_this.parents("li").hide(1000);
+									_this.parents("li").remove();
+								},2000);
+								layer.close(index);
+								layer.msg(res.message);
+							}
 						}
-					});
+					})
+				});
+            });
+
+            //批量删除
+			// $(".batchDel").on("click",function () {})
+			$(".batchDel").click(function () {
+				layer.confirm("确认删除选中的图片？", {icon: 3, title: "提示信息"}, function () {
+					var index = layer.msg("删除中，请稍后", {icon: 6, time: 0, shade: 0.8});
+					var _this = $(this);
+					var delIds = [];
+					// $("#Images li input[type='checkbox']")//获取页面中ui>li中的所有checkbox元素
+					$("input[name='belle']:checked").each(function () {
+						delIds.push($(this).val());
+					})
+					$.ajax({
+						type: "post",
+						url: "/deleteAllByIds",
+						data: {"delIds": delIds},//deleteById(String id)
+                        contentType:"application/x-www-form-urlencoded",
+						//dataType: "json",
+						//data:JSON.stringify(delId) ===>json格式数据传参
+						success: function (res) {
+							if (res.code == 0) {
+								$("input[name='belle']:checked").each(function () {
+									//hide:隐藏页面元素
+									$(this).parents("li").hide(1000);
+									setTimeout(function () {
+										$(this).parents("li").remove();
+									}, 2000);
+									$('#Images li input[type="checkbox"]').prop("checked",false);
+								});
+								layer.close(index);
+								layer.msg(res.message);
+								//form.render();
+							}
+						}
+					})
+				})
+			})
+
+
+			//全选
+			form.on('checkbox(selectAll)',function (data) {
+				var childCheckBox = $("#Images li input[type='checkbox']");
+				childCheckBox.each(function (index,item) {
+					//data.elem:原始DOM对象，指checkbox对象
+					item.checked = data.elem.checked;
+				});
+				form.render('checkbox');
+			})
+
+			//通过判断子选项是否全部选中来确定全选框是否选中
+			form.on('checkbox(choose)',function (data) {
+				var child = $(data.elem).parents("#Images").find('li input[type="checkbox"]');
+				var childChecked = $(data.elem).parents("#Images").find('li input[type="checkbox"]:checked');
+				//通过判断选中checkbox的个数与checkbox的个数是否相同来判断是否全选
+				if (child.length == childChecked.length){
+					$(":checkbox[id='selectAll']").prop("checked",true);
+				} else {
+					$(":checkbox[id='selectAll']").prop("checked",false);
 				}
-			});
+				form.render("checkbox");
+			})
 		})
 	</script>
+
 </body>
 </html>
