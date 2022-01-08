@@ -21,5 +21,9 @@ public class CacheTest {
        String updateValue  =  dataCache.put(1L,"北京");
        System.out.println(updateValue);
    }
+   @Test
+    public void getOrderCodeTest(){
+       System.out.println("订单号"+  dataCache.getOrderCode("DD"));
 
+   }
 }
