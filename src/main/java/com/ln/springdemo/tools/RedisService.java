@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
  * 针对所有的Set 都是以s开头的方法
  * 针对所有的List 都是以l开头的方法
  **/
+//@Service用于标注业务层组件
 @Service
 public class RedisService {
     @Resource

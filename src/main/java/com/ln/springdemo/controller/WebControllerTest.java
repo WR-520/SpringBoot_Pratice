@@ -16,7 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
  * 在一个Controller中如果使用RestController注解，则controller中的方法无法返回return中的内容
  * 如果需要返回到指定的页面，则需要使用@Controller
  * 如果需要返回JSON、xml格式的内容到页面上，则需要在对应的方法上加上@ResponseBody
- * @ResponseBody注解作用：将Controller中方法执行的结果转换为JSON格式的
+ * @ResponseBody注解作用：将Controller中方法执行的结果转换为JSON格式的字符串
  */
 //@RestController
 @Controller

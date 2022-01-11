@@ -28,6 +28,8 @@ spring:
     url: jdbc:mysql://localhost:3306/school?serverTimezone=UTC
 #    指定druid连接池
 #    type: com.alibaba.druid.pool.DruidDataSource
+
+#  Hibernate是一个开放源代码的对象关系映射框架，它对JDBC进行了非常轻量级的对象封装，它将POJO与数据库表建立映射关系，是一个全自动的orm框架
   jpa:
     database: mysql
     hibernate:
@@ -55,6 +57,11 @@ spring:
   cache:
     redis:
       time-to-live: 60000 #设置缓存存储时间
+
+
+#      Redis是什么？两句话可以做下概括：
+#      1. 是一个完全开源免费的key-value内存数据库
+#      2. 通常被认为是一个数据结构服务器，主要是因为其有着丰富的数据结构 strings、map、 list、sets、 sorted sets
   redis:
     host: 127.0.0.1 #redis服务器地址
     port: 6379 #redis服务器端口

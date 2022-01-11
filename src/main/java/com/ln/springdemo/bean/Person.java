@@ -10,7 +10,9 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
+//@Data 注解的主要作用是提高代码的简洁，
+// 使用这个注解可以省去代码中大量的
+// get()、 set()、 toString()等方法；
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

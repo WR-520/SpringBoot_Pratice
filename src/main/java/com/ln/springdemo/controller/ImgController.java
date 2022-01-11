@@ -33,7 +33,7 @@ public class ImgController {
     @Value("${saveImage.path}")
     private String path;
 
-    @Resource
+    @Autowired
     private ImgService imgService;
 
     @Resource
